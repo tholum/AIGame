@@ -11,7 +11,7 @@ module.exports = {
 		while( x <= width ){
 			while( y <= height ){
 				var name =  x + '.' + y;
-				self.world[ name ] = { class : 'grass' , connections : [] };
+				self.world[ name ] = { class : 'grass' , connections : [] , x : x , y : y };
 				if(  y < 50 ){
 					self.world[ name ].connections.push( x + "." + (y+1) );
 				}
