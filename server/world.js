@@ -7,9 +7,23 @@ module.exports = {
 		var height = 50;
 		var x = 1;
 		var y = 1;
+		
 		while( x <= width ){
 			while( y <= height ){
-				self.world[ x + '.' + y] = { class : 'grass' , connections : [] };
+				var name =  x + '.' + y;
+				self.world[ name ] = { class : 'grass' , connections : [] };
+				if(  y < 50 ){
+					self.world[ name ].connections.push( x + "." + (y+1) );
+				}
+				if(  y != 1 ){
+					self.world[ name ].connections.push( x + "." + (y-1) );	
+				}
+				if( x < 50  ){
+					self.world[ name ].connections.push( (x+1) + "." + y );	
+				}
+				if( x  != 1 ){
+					self.world[ name ].connections.push( (x-1) + "." + y );	
+				}
 				y++;
 			} 
 			y=1;	
