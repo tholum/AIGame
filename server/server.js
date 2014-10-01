@@ -3,7 +3,8 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 app.use(express.static(__dirname ) );
-
+var world = require('./world.js');
+world.init();
 var games = {demo : [] };
 var history = {};
 
@@ -39,6 +40,8 @@ io.on('connection', function (socket) {
         io.sockets.emit('chat' , chat );
     });
 });
-
+app.get('/world', function(req,res){
+	res.send( world.world );
+});
 server.listen(8080);
 
