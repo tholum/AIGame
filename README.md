@@ -5,7 +5,7 @@ A game for AI Programers to compete against each other
 
 Requirements node.js ( http://www.nodejs.org )
 
-Note for ubuntu users: by default if you install via "sudo apt-get install nodejs" the node command will be nodejs instead of node, to fix this run "ln -s /usr/bin/nodejs /usr/bin/node"
+Note for ubuntu users: by default if you install nodejs via "sudo apt-get install nodejs" the node command will be nodejs instead of node, to fix this run "ln -s /usr/bin/nodejs /usr/bin/node"
 
 Install and run
 ======
