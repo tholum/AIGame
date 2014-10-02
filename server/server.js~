@@ -44,8 +44,8 @@ io.on('connection', function (socket) {
 app.get('/map', function(req,res){
 	res.send( world.world );
 });
-console.log( world.validateMovement( { from : "1.1" , to : "1.2" , speed : 2 }));
-console.log( world.validateMovement( { from : "1.1" , to : "1.3" , speed : 2 }));
-console.log( world.validateMovement( { from : "1.1" , to : "1.2" , speed : 0 }));
+console.log( world.validateMovement( { from : "1.1" , to : "1.2" , moves : 2 }));
+console.log( world.validateMovement( { from : "1.1" , to : "1.3" , moves : 2 }));
+console.log( world.validateMovement( { from : "1.1" , to : "1.2" , moves : 0 }));
 server.listen(8080);
 

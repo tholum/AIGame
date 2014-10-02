@@ -5,7 +5,9 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 app.use(express.static(__dirname + '/www' ) );
 var world = require('./world.js');
+var units = require('./units.js');
 world.init();
+units.init();
 var games = {demo : [] };
 var history = {};
 
@@ -44,8 +46,9 @@ io.on('connection', function (socket) {
 app.get('/map', function(req,res){
 	res.send( world.world );
 });
-console.log( world.validateMovement( { from : "1.1" , to : "1.2" , moves : 2 }));
-console.log( world.validateMovement( { from : "1.1" , to : "1.3" , moves : 2 }));
-console.log( world.validateMovement( { from : "1.1" , to : "1.2" , moves : 0 }));
+var g1 = units.createUnit('grunt');
+g1.takeHit( 5 );
+console.log( g1 );
+
 server.listen(8080);
 
