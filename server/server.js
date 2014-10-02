@@ -46,9 +46,21 @@ io.on('connection', function (socket) {
 app.get('/map', function(req,res){
 	res.send( world.world );
 });
+app.get('/units', function(req,res){
+	res.send( units.units );
+});
+app.get('/move' ,  function(req,res){
+    var unit = req.param('unit');
+    var to = req.param('to')
+    world.moveUnit( units.units[parseInt(unit)] , to );
+    res.send( true );
+});
 var g1 = units.createUnit('grunt');
+world.addUnit( g1 , '1.1');
 g1.takeHit( 5 );
+g1.movesLeft = 10;
 console.log( g1 );
+
 
 server.listen(8080);
 

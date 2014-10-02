@@ -22,6 +22,27 @@ module.exports = {
 		} 
 
 	},
+	moveUnit : function(unit , to ){
+		var self = this;
+		var vm = self.validateMovement({ moves : unit.movesLeft , from : unit.position , to : to });
+		if( vm.success === true ){
+			self.removeUnit( unit  );
+			unit.movesLeft = vm.moves;
+			self.addUnit( unit , to );
+		}
+	},
+	addUnit : function( unit , to ){
+		var self = this;
+		unit.position = to;
+		self.world[unit.position].units.push( unit.id );
+	},
+	removeUnit : function( unit ){
+		var self = this;
+		var index = self.world[unit.position].units.indexOf( unit.id );
+		if( index > -1 ){
+			self.world[unit.position].units.splice( index , 1 );
+		}
+	},
 	generateWorld : function(){
 		var self = this;
 		var width = 50;
@@ -32,7 +53,7 @@ module.exports = {
 		while( x <= width ){
 			while( y <= height ){
 				var name =  x + '.' + y;
-				self.world[ name ] = { tileClass : 'grass' , connections : [] , x : x , y : y };
+				self.world[ name ] = { tileClass : 'grass' , connections : [] , x : x , y : y , units : [] };
 				if(  y < 50 ){
 					self.world[ name ].connections.push( x + "." + (y+1) );
 				}
