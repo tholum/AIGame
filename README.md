@@ -23,7 +23,7 @@ Default Server Location [ds] = localhost:8080
 
 [ds]/map     ( Returns the whole world )
 
-[ds]/move?unit=[unit_id]&to=[location_name]
+[ds]/move?unit=[unit_id]&to=[location_name]  ( moves unit [unit_id] from there current location to [location_name] )
 
 [ds]/units   ( returns all units )
 
