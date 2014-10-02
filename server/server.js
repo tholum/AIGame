@@ -4,12 +4,26 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 app.use(express.static(__dirname + '/www' ) );
+var game = {
+    players : { 1 : '' , 2 : '' },
+    turn : 0,
+    endTurn : function(){
+        this.turn++;
+        for( var u in units.units ){
+            units.units[u].newTurn();
+        }
+    }
+};
+
 var world = require('./world.js');
 var units = require('./units.js');
-world.init();
-units.init();
+world.init(game);
+units.init(game);
 var games = {demo : [] };
 var history = {};
+
+
+
 
 io.on('connection', function (socket) {
     socket.on('move', function ( move ) {
@@ -55,12 +69,14 @@ app.get('/move' ,  function(req,res){
     world.moveUnit( units.units[parseInt(unit)] , to );
     res.send( true );
 });
+app.get('/endturn' , function(req,res){
+    game.endTurn();
+    res.send(game);
+});
 var g1 = units.createUnit('grunt');
+g1.player = 1;
 world.addUnit( g1 , '1.1');
 g1.takeHit( 5 );
 g1.movesLeft = 10;
-console.log( g1 );
-
-
 server.listen(8080);
 

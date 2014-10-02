@@ -11,12 +11,14 @@ module.exports = {
 			unit.alive = true;
 			unit.position = "";
 			unit.movesLeft = 0;
+			unit.actionsLeft = 0;
 			unit.player = 0;
 			unit.id = parseInt( self.currentId );
 			//adding these as functions so we can latter create special units and upgrade 
 			unit.takeHit = function( hitValue ){ this.hp = this.hp - hitValue; this.alive = this.hp > 0 ? true : false; }
 			//adding these as functions so we can latter create special units and upgrade 
 			unit.attack = function( range , unitType ){ return this.range >= range ? 0 : this.damage;}
+			unit.newTurn = function(){ this.movesLeft = parseInt( this.speed ); this.actionsLeft = parseInt(this.actions);   };
 		}
 		self.units[unit.id] = unit;
 		return unit;

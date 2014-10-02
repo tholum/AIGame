@@ -25,7 +25,7 @@ module.exports = {
 	moveUnit : function(unit , to ){
 		var self = this;
 		var vm = self.validateMovement({ moves : unit.movesLeft , from : unit.position , to : to });
-		if( vm.success === true ){
+		if( vm.success === true && ((self.game.turn % 2) +1 ) == unit.player ){
 			self.removeUnit( unit  );
 			unit.movesLeft = vm.moves;
 			self.addUnit( unit , to );
@@ -87,8 +87,10 @@ module.exports = {
 		}
 		
 	},
-	init : function(){
+	game : {},
+	init : function(game){
 		var self = this;
+		self.game = game;
 		self.generateWorld();
 		
 		
