@@ -65,7 +65,7 @@ app.get('/move' ,  function(req,res){
     var unit = req.param('unit');
     var to = req.param('to')
     var status = world.moveUnit( units.units[parseInt(unit)] , to );
-    res.send( , { unit : unit , to : to , status : status } );
+    res.send(  { unit : unit , to : to , status : status } );
 });
 app.get('/attack' , function(req,res){
     var unit = req.param('unit');
