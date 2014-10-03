@@ -22,13 +22,36 @@ module.exports = {
 		} 
 
 	},
+    getRange: function( from , to ){},
+    validateRange: function( range , from , to ){
+        var self = this;
+        if( self.world.hasOwnProperty( from ) && self.world.hasOwnProperty( to )){
+            var f = self.world[from];
+            var t = self.world[to];
+            return range >= Math.sqrt( Math.pow(f.x - t.x , 2) + Math.pow(f.y - t.y , 2) );
+
+        } else { return false; }
+    },
+    attackUnit: function( unit , target ){
+        var self = this;
+        var inRange = self.validateRange( unit.range , unit.position , target.position );
+        if( inRange ){
+
+        } else {
+            return false;
+        }
+    },
 	moveUnit : function(unit , to ){
 		var self = this;
 		var vm = self.validateMovement({ moves : unit.movesLeft , from : unit.position , to : to });
-		if( vm.success === true && ((self.game.turn % 2) +1 ) == unit.player ){
+		var playerTurn  = ((self.game.turn % 2) +1 ) == unit.player;
+		if( vm.success === true && playerTurn ){
 			self.removeUnit( unit  );
 			unit.movesLeft = vm.moves;
 			self.addUnit( unit , to );
+			return { success : true };
+		} else {
+			return { success : false , error : { moveValid : vm.success , playerTurn : playerTurn } };
 		}
 	},
 	addUnit : function( unit , to ){

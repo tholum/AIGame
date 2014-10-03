@@ -27,12 +27,10 @@ var history = {};
 
 io.on('connection', function (socket) {
     socket.on('move', function ( move ) {
-        var game = move.game;
-        var from = move.from;
-        var to = move.to;
-        games[game].push({ from : from , to : to });
-        console.log( games );
-        io.sockets.emit('game' + game , { from : from , to : to } );
+	var unit = move.unit;
+	var to = move.to;
+	var status = world.moveUnit( units.units[parseInt(unit)] , to );
+        io.sockets.emit('move'  , { unit : unit , to : to , status : status } );
     });
     socket.on('joinGame' , function(game){
         for( id in games[game]  ){
@@ -66,8 +64,13 @@ app.get('/units', function(req,res){
 app.get('/move' ,  function(req,res){
     var unit = req.param('unit');
     var to = req.param('to')
-    world.moveUnit( units.units[parseInt(unit)] , to );
-    res.send( true );
+    var status = world.moveUnit( units.units[parseInt(unit)] , to );
+    res.send( , { unit : unit , to : to , status : status } );
+});
+app.get('/attack' , function(req,res){
+    var unit = req.param('unit');
+    var target  = req.param('target');
+    world.attachUnit( units.units[parseInt(unit)] , units.units[parseInt(target)] );
 });
 app.get('/endturn' , function(req,res){
     game.endTurn();
