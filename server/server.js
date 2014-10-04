@@ -95,10 +95,14 @@ app.get('/endphase' , function(req,res){
     game.endPhase();
     res.send(game);
 });
-var g1 = units.createUnit('grunt');
-g1.player = 1;
-world.addUnit( g1 , '1.1');
-g1.takeHit( 5 );
-g1.movesLeft = 10;
+
+var base1 = units.createUnit( 'base' );
+base1.player = 1;
+world.addUnit( base1 , "10.25" );
+
+var base2 = units.createUnit( 'base' );
+base2.player = 2;
+world.addUnit( base2 , "40.24" );
+
 server.listen(8080);
 

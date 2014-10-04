@@ -40,6 +40,6 @@ module.exports = {
 	unitTypes : {
 		'grunt' : { hp : 20 , speed : 1 , range : 1 , damage : 10 , missChance : 0 , actions : 2 , canBuild : [] , cost : 50  , collector : true },
 		'archer': { hp : 10 , speed : 1 , range : 2 , damage : 10 , missChance : 0 , actions : 2 , canBuild : [] , cost : 50 , collector : false },
-		'base'	: { hp : 200 , speed : 0 , range : 0 , damage : 0 , missChance : 0 , actions : 1 , canBuild : ['grunt' , 'archer' ] , , collector : false}
+		'base'	: { hp : 200 , speed : 0 , range : 0 , damage : 0 , missChance : 0 , actions : 1 , canBuild : ['grunt' , 'archer' ] , collector : false}
 	}
 }

@@ -67,10 +67,16 @@ module.exports = {
 	},
     buildUnit : function(type,unit,to){
         var self = this;    
-        if( self.game.phase == "build" && self.world[ unit.position ].connections.indexOf(to) !== -1 ){
-            var unit = self.units.createUnit(type);
-            unit.player = player;
-            return self.addUnit( unit , to );
+        if( self.game.phase == "build" && 
+            self.world[ unit.position ].connections.indexOf(to) !== -1 &&
+            unit.canBuild.indexOf( type ) !== -1 &&
+            self.units.unitTypes[type].cost <= game.players[unit.player].gold ){
+                var unit = self.units.createUnit(type);
+                unit.player = player;
+                game.players[unit.player].gold = game.players[unit.player].gold - unit.cost;
+                return self.addUnit( unit , to );
+        } else {
+            return false;
         }
     },
 	addUnit : function( unit , to ){

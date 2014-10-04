@@ -1,7 +1,7 @@
 ﻿1. Map: The Universe is a 50x50 square. 
    1. Map locations referenced by location. 1.1 - 50.50
       1. 1.1 is upper left corner, 50.50 is lower left
-   1. Player A’s home base takes up 4 squares, starting at square 9.24, ending square 10.25
+   1. Player A’s home base takes up 4 squares, starting at square 9.24, ending square 10.25 
    2. Player B’s home base takes up 4 squares, starting at square 39.24, ending at square 40.25
    3. Resource collection squares located as follows
       1. 10.10
