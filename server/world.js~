@@ -42,7 +42,7 @@ module.exports = {
         if( self.game.phase == "attack" ){
             var inRange = self.validateRange( unit.range , unit.position , target.position );
             if( inRange ){
-                return unit.attack( self.getRange( unit.position, target.position) , target )
+                unit.attack( self.getRange( unit.position, target.position) , target )
             } else {
                 return false;
             }

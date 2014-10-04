@@ -1,4 +1,4 @@
-var obs = require('obs');
+
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);

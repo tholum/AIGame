@@ -1,6 +1,6 @@
 module.exports = {
-    game : {},
-	init : function(game){ this.game = game; },
+
+	init : function(){},
 	currentId : 0,
 	units : {},
 	createUnit : function( type ){
@@ -14,16 +14,11 @@ module.exports = {
 			unit.movesLeft = 0;
 			unit.actionsLeft = 0;
 			unit.player = 0;
-            unit.type = type;
 			unit.id = parseInt( self.currentId );
 			//adding these as functions so we can latter create special units and upgrade 
 			unit.takeHit = function( hitValue , unit , range ){ 
                 this.hp = this.hp - hitValue;
                 this.alive = this.hp > 0 ? true : false; 
-                if( self.type == "base" && self.alive == false ){
-                    self.game.winner = unit.player;
-                    self.game.active = false;
-                }
                 return { damage : hitValue , isAlive : this.alive , hp : this.hp }
             }
 			//adding these as functions so we can latter create special units and upgrade 
