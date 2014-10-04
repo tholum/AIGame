@@ -69,6 +69,7 @@ io.on('connection', function (socket) {
 app.get('/buildUnit', function( req , res ){
     var unit = req.param('unit');
     var to = req.param('to')
+    var type = req.param('type');
     world.buildUnit(type,unit,to);
 });
 app.get('/game' , function( req, res ){

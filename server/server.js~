@@ -96,11 +96,11 @@ app.get('/endphase' , function(req,res){
     res.send(game);
 });
 
-var base1 = unit.createUnit( 'base' );
+var base1 = units.createUnit( 'base' );
 base1.player = 1;
 world.addUnit( base1 , "10.25" );
 
-var base2 = unit.createUnit( 'base' );
+var base2 = units.createUnit( 'base' );
 base2.player = 2;
 world.addUnit( base2 , "40.24" );
 

@@ -27,4 +27,8 @@ Default Server Location [ds] = localhost:8080
 
 [ds]/units   ( returns all units )
 
-[ds]/endTurn  ( Ends your turn )
+[ds]/endphase  ( Ends specific phase )
+
+[ds]/attack?unit=unit_id&target=target_unit_id  ( Ends specific phase )
+
+[ds]/buildUnit?type=unit_type&unit=unit_id&to=to  ( Ends specific phase )
