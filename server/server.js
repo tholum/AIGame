@@ -33,9 +33,6 @@ units.init(game);
 var games = {demo : [] };
 var history = {};
 
-
-
-
 io.on('connection', function (socket) {
     socket.on('move', function ( move ) {
 	var unit = move.unit;
@@ -48,22 +45,6 @@ io.on('connection', function (socket) {
             socket.emit('game' + game , games[game][id] );
         }
         
-    });
-    socket.on('listGames' , function(){
-        for( game in games ){
-            socket.emit('avalibleGames' , game);
-        }
-    });
-    socket.on('createGame' , function(name){
-       games[name] = []; 
-       io.sockets.emit('avalibleGames' , { add : name });
-    });
-    socket.on('resetGame' , function(game){
-        games[game] = [];
-        io.sockets.emit('game' , {reset : true });
-    });
-    socket.on('chat' , function(chat){
-        io.sockets.emit('chat' , chat );
     });
 });
 app.get('/buildUnit', function( req , res ){

@@ -102,7 +102,7 @@ module.exports = {
 		while( x <= width ){
 			while( y <= height ){
 				var name =  x + '.' + y;
-				self.world[ name ] = { tileClass : 'grass' , connections : [] , x : x , y : y , units : [] };
+				self.world[ name ] = { name : name , tileClass : 'grass' , connections : [] , x : x , y : y , units : [] };
 				if(  y < 50 ){
 					self.world[ name ].connections.push( x + "." + (y+1) );
 				}
@@ -131,7 +131,6 @@ module.exports = {
 			"30.30"
 		]
 		for( var s in list ){
-			console.log( list[s] );
 			self.world[ list[s] ].tileClass = "gold";
 		}
 		
