@@ -37,7 +37,14 @@
         <script>
             var view;
             function updateMap(){
-
+                $.getJSON('/units' , function( key ,value ){
+                
+                view.units.push( value );
+                view.units.sort(
+                    function(left, right) { 
+                        return  left.id < right.id ? -1 : 1; 
+                    });
+                });
             }
 
             $(function(){
