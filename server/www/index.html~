@@ -1,0 +1,101 @@
+<html>
+	<head>	
+        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="bower_components/components-font-awesome/css/font-awesome.min.css">
+        <script src="bower_components/jquery/dist/jquery.min.js"></script>
+        <script src="bower_components/jqueryui/jquery-ui.min.js"></script>
+        <script src="bower_components/knockoutjs/dist/knockout.js"></script>
+        <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <style>
+            .map div {
+                display: inline-block;
+                font-size: 5px;
+            }
+            .grass {
+                background-color : green;
+            }
+            .gold {
+                background-color : yellow;
+            }
+            .archer {
+                background-image : url(img/archer.png);
+                background-size: 20px 20px;
+                background-repeat: no-repeat;
+            }
+            .base {
+                background-image : url(img/base.png);
+                background-size: 20px 20px;
+                background-repeat: no-repeat;
+            }
+            .grunt {
+                background-image : url(img/grunt.png);
+                background-size: 20px 20px;
+                background-repeat: no-repeat;
+            }
+        </style>
+        <script>
+            var view;
+            function updateMap(){
+                $.getJSON('/units' , function( key ,value ){
+
+                });
+            }
+
+            $(function(){
+                view = {
+                    map : ko.observableArray([]),
+                    units : ko.observableArray([]),
+                    unitById : function (id)
+                    {
+                        var match = ko.utils.arrayFirst(view.units(), function (item)
+                        {
+                            return item.id === id; 
+                        });
+                        if (!match)
+                            return false;
+                        else
+                            return match;
+                    }
+                };
+                view.units.extend({ rateLimit: 25 });
+                view.map.extend({ rateLimit: 25 });
+                $.getJSON('/units' , function( units ){
+                    $.each( units , function( key,value ){
+                        view.units.push( value );
+                    });
+                });
+                $.getJSON('/map' , function(map){
+                    $.each( map , function( key , value ){
+                        value.unitType = ko.computed(function(){
+                            if( value.units.length !== 0 ){
+                                var unit = view.unitById( value.units[0] );
+                                if( unit !== false ){
+                                    return unit.type;
+                                }
+                           } else {
+                                return '';
+                           }
+                        });
+                        view.map.push( value );
+                    });
+                });
+                view.map.sort(
+                    function(left, right) { 
+                        return left.y == right.y ? (left.x < right.x ? -1 : 1) : (left.y < right.y ? -1 : 1); 
+                    });
+                ko.applyBindings(view);
+            });
+        </script>
+	</head>
+	<body>
+        <div class="map" >
+        <!-- ko foreach: map --><!--
+          --><div style="width:20px;height:20px;padding: 0;margin:0;" data-bind="css : { grass : tileClass == 'grass' , gold : tileClass == 'gold' , archer : x == y , base : unitType() == 'base' , archer : unitType() == 'archer' , grunt : unitType() == 'grunt' }" ></div><!--
+          --><!-- ko if: y == 50 -->
+            <br/>
+          <!-- /ko --><!--
+       --><!-- /ko -->
+        </div>
+	</body>
+</html>
