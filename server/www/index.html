@@ -7,6 +7,15 @@
         <script src="bower_components/jqueryui/jquery-ui.min.js"></script>
         <script src="bower_components/knockoutjs/dist/knockout.js"></script>
         <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            var socket = io.connect();
+            socket.on("action" , function( data ){ console.log( data ); });
+            socket.on("phase" , function( data ){ console.log( data ); });
+            socket.on("win" , function( data ){ console.log( data ); });
+            socket.on("error" , function( data ){ console.log( data ); });
+            function action( data ){ socket.emit( 'action' , data ); }
+        </script>
         <style>
             .map div {
                 display: inline-block;

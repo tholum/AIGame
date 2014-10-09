@@ -1,6 +1,73 @@
 module.exports = {
 	/* { tileClass : 'base' , connections : [] } */
 	world : {},
+    on : function( string , func ){
+        var self = this;
+        if( self.onObj.hasOwnProperty( string ) ){
+            self.onObj[string].push( func );
+        }
+    },
+    executeOn : function( string , data ){
+        var self = this;
+        if( self.onObj.hasOwnProperty( string ) ){
+            for( var f in self.onObj[string] ){
+                self.onObj[string][f](data);
+            } 
+        }
+    },
+    action : function( data ){
+        var self = this;
+        //move attack endphase
+        if( typeof data == "object" ){
+            if( data.hasOwnProperty("action") ){
+                switch( data.action ){
+                    case "move":
+                        if( data.hasOwnProperty('unit') && data.hasOwnProperty('to') ){
+                            var status = self.moveUnit( self.units.units[parseInt(data.unit)] , data.to );
+                            self.executeOn("action" , status );
+                            return status;
+                        } else {
+                            self.executeOn("error" , { status : 'invalid paramiters' , data : data } );
+                        }
+                        
+                    break;
+                    case "attack":
+                        if( data.hasOwnProperty('unit') && data.hasOwnProperty('target') ){
+                            var status = self.attachUnit( self.units.units[parseInt(unit)] , self.units.units[parseInt(target)] );
+                            self.executeOn("action" , status );
+                        } else {
+                            self.executeOn("error" , { status : 'invalid paramiters' , data : data } );
+                            return status;
+                        }
+                    break;
+                    case "endphase":
+                        self.game.endPhase();
+                        self.executeOn("action" , self.game );
+                        return self.game;
+                    break;
+                    case "build":
+                        if( data.hasOwnProperty('type') && data.hasOwnProperty('unit') && data.hasOwnProperty('to') ){
+                            if( self.units.units.hasOwnProperty( data.unit ) ){
+                                self.executeOn("action" , self.buildUnit(data.type,self.units.units[data.unit],data.to) );
+                            } else {
+                                self.executeOn("error" , { status : 'invalid unit' , data : data } );
+                            }
+                        } else {
+                            self.executeOn("error" , { status : 'invalid paramiters' , data : data } );
+                            return status;
+                        }
+                    break;
+                        
+                }
+            }
+        }
+    },
+    onObj : {
+        "action" : [],
+        "phase" : [],
+        "win" : [],
+        "error" : []
+    },
 	tileType : {
 		'grass' : { speed : 1 , gold : false },
 		'gold' : { speed : 1 , gold : true }
@@ -52,7 +119,7 @@ module.exports = {
     },
 	moveUnit : function(unit , to ){
 		var self = this;
-        if( self.game.phase == "game" ){
+        if( self.game.phase == "move" ){
 		    var vm = self.validateMovement({ moves : unit.movesLeft , from : unit.position , to : to });
 		    var playerTurn  = ((self.game.turn % 2) +1 ) == unit.player;
 		    if( vm.success === true && playerTurn ){
@@ -70,11 +137,11 @@ module.exports = {
         if( self.game.phase == "build" && 
             self.world[ unit.position ].connections.indexOf(to) !== -1 &&
             unit.canBuild.indexOf( type ) !== -1 &&
-            self.units.unitTypes[type].cost <= game.players[unit.player].gold ){
-                var unit = self.units.createUnit(type);
-                unit.player = player;
-                game.players[unit.player].gold = game.players[unit.player].gold - unit.cost;
-                return self.addUnit( unit , to );
+            self.units.unitTypes[type].cost <= self.game.players[unit.player].gold ){
+                var newunit = self.units.createUnit(type);
+                newunit.player = parseInt( unit.player );
+                self.game.players[unit.player].gold = parseInt( self.game.players[unit.player].gold )  - (parseInt(newunit.cost)==NaN?0:parseInt( newunit.cost ));
+                return self.addUnit( newunit , to );
         } else {
             return false;
         }

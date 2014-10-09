@@ -16,6 +16,37 @@ cd AIGame
 
 node server.js
 
+Actions
+======
+I added a new actions interface that allows you to execute all actions from a single function. This allows the addition of different inputs into the server with very little code needing to be changed, currently there are 2 interfaces
+
+webserver/action?params
+
+and socket.io socket.emit('action' , params );
+
+Valid Actions are
+
+move         required paramiters = unit , to 
+
+endphase     no paramiters
+
+attack       required paramiters = unit  , target 
+
+build       required paramiters = type , unit , to
+
+
+unit   : the unit_id of the unit you wish to do the action FROM
+to     : the location_id of where you wish to do the action
+target : the unit_id of which you wish to do the action
+
+
+Some examples ( for socket io )
+
+socket.emit( "action" , { action : 'endphase' } );
+
+socket.emit( "action" ,  { action : 'build' , to : '10.26' , type : 'grunt' , unit : 1 } ); 
+
+socket.emit( "action" ,  { action : 'move' , to : '10.27' ,  unit : 3 } );
 
 Routes 
 ======
@@ -32,3 +63,5 @@ Default Server Location [ds] = localhost:8080
 [ds]/attack?unit=unit_id&target=target_unit_id 
 
 [ds]/buildUnit?type=unit_type&unit=unit_id&to=to 
+
+[ds]/action?action=[build,endphase,attack]&{params based on what the action requires}

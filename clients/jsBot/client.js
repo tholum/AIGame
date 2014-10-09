@@ -1,4 +1,11 @@
 var ml = require('ml-js');
+
+function mainFunction(){
+
+}
+var f = new mainFunction();
+
+qValues = new ml.CSDAQValues({ actions : [] , nb_actions );
 /*
 ml = require 'ml-js'
 
