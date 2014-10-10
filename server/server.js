@@ -8,6 +8,7 @@ app.use(express.static(__dirname + '/www' ) );
 var game = {
     players : { 1 : {name: '' , gold : 100  } , 2 : {name: '' , gold : 100 } },
     turn : 0,
+	player : 1,
     winner : 0,
     active : true,
     phase : "",
@@ -24,6 +25,7 @@ var game = {
         } else {
             this.phase = this.phases[ this.phases.indexOf( this.phase ) + 1 ];
         }
+        game.player = ((game.turn % 2) +1 );
         for( var x in self.phaseEnd ){
             self.phaseEnd[x]();
         }
@@ -75,11 +77,24 @@ io.on('connection', function (socket) {
     });
     socket.on( 'action' , function( data ){ console.log( data );  world.action(  data  );  });
 });
-
 io.sockets.on('connection' , function( socket ){
     world.on('action' , function( data ){ socket.emit( 'action' , data ); });
     world.on('win' , function( data ){  socket.emit( 'win' , data ); });
-    world.on('phase' , function( data ){  socket.emit( 'phase' , data ); });
+    world.on('phase' , function( ){  socket.emit( 'phase' , { game : game , units : units }); } );
+	socket.on( 'map' , function(data){
+		if( typeof data == "string" && world.world.hasOwnProperty( data )  ){
+			socket.emit( 'map', world.world[data] );
+		} else {
+			socket.emit( 'map', world.world );
+		}
+	} );
+	socket.on( 'game' , function(data){
+		socket.emit( game );
+	});	
+	socket.on( 'units' , function( data ){
+		socket.emit( units.units );
+	});
+
 });
 app.get('/buildUnit', function( req , res ){
     var unit = req.param('unit');
