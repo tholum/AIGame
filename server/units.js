@@ -14,25 +14,28 @@ module.exports = {
 			unit.movesLeft = 0;
 			unit.actionsLeft = 0;
 			unit.player = 0;
+
             unit.type = type;
 			unit.id = parseInt( self.currentId );
-			//adding these as functions so we can latter create special units and upgrade 
-			unit.takeHit = function( hitValue , unit , range ){ 
+			//adding these as functions so we can latter create special units and upgrade
+			unit.takeHit = function( hitValue , unit , range ){
                 this.hp = this.hp - hitValue;
-                this.alive = this.hp > 0 ? true : false; 
+                this.alive = this.hp > 0 ? true : false;
                 if( self.type == "base" && self.alive == false ){
                     self.game.winner = unit.player;
                     self.game.active = false;
                 }
                 return { damage : hitValue , isAlive : this.alive , hp : this.hp }
             }
-			//adding these as functions so we can latter create special units and upgrade 
+			//adding these as functions so we can latter create special units and upgrade
 			unit.attack = function( range , target ){
                 if( range <= this.range ){
                     return target.takeHit( this.damage , this , range );
                 }
             }
-			unit.newTurn = function(){ this.movesLeft = parseInt( this.speed ); this.actionsLeft = parseInt(this.actions);   };
+			unit.newTurn = function(){
+        self.units[unit.id].movesLeft = parseInt( self.units[unit.id].speed ); self.units[unit.id].actionsLeft = parseInt(self.units[unit.id].actions);
+      };
 		}
 		self.units[unit.id] = unit;
 		return unit;

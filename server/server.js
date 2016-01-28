@@ -5,6 +5,9 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 app.use(express.static(__dirname + '/www' ) );
 
+var world = require('./world.js');
+var units = require('./units.js');
+
 var game = {
     players : { 1 : {name: '' , gold : 100  } , 2 : {name: '' , gold : 100 } },
     turn : 0,
@@ -14,28 +17,29 @@ var game = {
     phase : "",
     phases : [ "move","attack","build" ],
     phaseEnd : [],
-    endPhase : function(){
-        var self = this;
-        if( this.phase == this.phases[ this.phases.length -1 ] ){
-            this.turn++;
-            for( var u in units.units ){
-                units.units[u].newTurn();
-            } 
-            this.phase = this.phases[0];  
-        } else {
-            this.phase = this.phases[ this.phases.indexOf( this.phase ) + 1 ];
-        }
-        game.player = ((game.turn % 2) +1 );
-        for( var x in self.phaseEnd ){
-            self.phaseEnd[x]();
-        }
-    }
+
 };
+game.endPhase = function(){
+    var self = game;
+    if( self.phase == self.phases[ self.phases.length -1 ] ){
+        self.turn++;
+
+        for( var u in units.units ){
+            units.units[u].newTurn();
+
+        }
+        self.phase = self.phases[0];
+    } else {
+        self.phase = self.phases[ self.phases.indexOf( self.phase ) + 1 ];
+    }
+    game.player = ((game.turn % 2) +1 );
+    for( var x in self.phaseEnd ){
+        self.phaseEnd[x]();
+    }
+}
 //Setting the game to the first phase
 game.phase = game.phases[0];
 
-var world = require('./world.js');
-var units = require('./units.js');
 game.phaseEnd.push( function(){
     world.executeOn( 'phase' , game );
 });
@@ -58,7 +62,7 @@ world.on( 'phase' , function(){
             if( world.world.hasOwnProperty( unit.position ) ){
             var tileClass = world.world[unit.position].tileClass;
                 if( unit.player == player && unit.collector == true && tileClass == "gold" ){
-                        game.players[player].gold = parseInt( game.players[player].gold ) + 10 ; 
+                        game.players[player].gold = parseInt( game.players[player].gold ) + 10 ;
                 }
             }
         }
@@ -75,7 +79,7 @@ io.on('connection', function (socket) {
             socket.emit('game' + game , games[game][id] );
         }
     });
-    socket.on( 'action' , function( data ){ console.log( data );  world.action(  data  );  });
+    socket.on( 'action' , function( data ){ world.action(  data  );  });
 });
 io.sockets.on('connection' , function( socket ){
     world.on('action' , function( data ){ socket.emit( 'action' , data ); });
@@ -88,11 +92,14 @@ io.sockets.on('connection' , function( socket ){
 			socket.emit( 'map', world.world );
 		}
 	} );
+  socket.on("getphase" , function(){
+    socket.emit( 'phase' , { game : game , units : units });
+  });
 	socket.on( 'game' , function(data){
-		socket.emit( game );
-	});	
+		socket.emit( 'game' , game );
+	});
 	socket.on( 'units' , function( data ){
-		socket.emit( units.units );
+		socket.emit( 'units' , units.units );
 	});
 
 });
@@ -136,4 +143,3 @@ base2.player = 2;
 world.addUnit( base2 , "40.24" );
 
 server.listen(8080);
-

@@ -12,7 +12,7 @@ module.exports = {
         if( self.onObj.hasOwnProperty( string ) ){
             for( var f in self.onObj[string] ){
                 self.onObj[string][f](data);
-            } 
+            }
         }
     },
     action : function( data ){
@@ -27,16 +27,16 @@ module.exports = {
                             self.executeOn("action" , status );
                             return status;
                         } else {
-                            self.executeOn("error" , { status : 'invalid paramiters' , data : data } );
+                            self.executeOn("error" , { status : 'invalid paramiters move' , data : data } );
                         }
-                        
+
                     break;
                     case "attack":
                         if( data.hasOwnProperty('unit') && data.hasOwnProperty('target') ){
                             var status = self.attachUnit( self.units.units[parseInt(unit)] , self.units.units[parseInt(target)] );
                             self.executeOn("action" , status );
                         } else {
-                            self.executeOn("error" , { status : 'invalid paramiters' , data : data } );
+                            self.executeOn("error" , { status : 'invalid paramiters attack' , data : data } );
                             return status;
                         }
                     break;
@@ -48,16 +48,20 @@ module.exports = {
                     case "build":
                         if( data.hasOwnProperty('type') && data.hasOwnProperty('unit') && data.hasOwnProperty('to') ){
                             if( self.units.units.hasOwnProperty( data.unit ) ){
-                                self.executeOn("action" , self.buildUnit(data.type,self.units.units[data.unit],data.to) );
+
+															var unit = self.buildUnit(data.type,self.units.units[data.unit],data.to)
+                                self.executeOn("action" , unit );
                             } else {
+
                                 self.executeOn("error" , { status : 'invalid unit' , data : data } );
                             }
                         } else {
-                            self.executeOn("error" , { status : 'invalid paramiters' , data : data } );
+
+                            self.executeOn("error" , { status : 'invalid paramiters build' , data : data } );
                             return status;
                         }
                     break;
-                        
+
                 }
             }
         }
@@ -81,12 +85,12 @@ module.exports = {
 				} else {
 					return { success : false , errors : { speed : self.tileType[self.world[data.from].tileClass].speed <= data.moves , connection : self.world[data.from].connections.indexOf(data.to) !== -1  } };
 				}
+			} else {
+				return { success : false };
 			}
 		} else {
-			console.log( "invalid paramiters for world.validateMovement");
-			console.log( data );
-			return { success : false };	
-		} 
+			return { success : false };
+		}
 
 	},
     getRange: function( from , to ){
@@ -98,7 +102,7 @@ module.exports = {
 
         } else { return false; }
     },
-    
+
     validateRange: function( range , from , to ){
         var self = this;
         var trueRange = self.getRange( from , to );
@@ -121,6 +125,7 @@ module.exports = {
 		var self = this;
         if( self.game.phase == "move" ){
 		    var vm = self.validateMovement({ moves : unit.movesLeft , from : unit.position , to : to });
+				console.log( vm );
 		    var playerTurn  = ((self.game.turn % 2) +1 ) == unit.player;
 		    if( vm.success === true && playerTurn ){
 			    self.removeUnit( unit  );
@@ -133,8 +138,9 @@ module.exports = {
         }
 	},
     buildUnit : function(type,unit,to){
-        var self = this;    
-        if( self.game.phase == "build" && 
+			console.log( "TUT;" + type + "," + unit + ",X:" + to.x + "Y:" + to.y );
+        var self = this;
+        if( self.game.phase == "build" &&
             self.world[ unit.position ].connections.indexOf(to) !== -1 &&
             unit.canBuild.indexOf( type ) !== -1 &&
             self.units.unitTypes[type].cost <= self.game.players[unit.player].gold ){
@@ -143,6 +149,7 @@ module.exports = {
                 self.game.players[unit.player].gold = parseInt( self.game.players[unit.player].gold )  - (parseInt(newunit.cost)==NaN?0:parseInt( newunit.cost ));
                 return self.addUnit( newunit , to );
         } else {
+						console.log( "Unit Failed ");
             return false;
         }
     },
@@ -165,7 +172,7 @@ module.exports = {
 		var height = 50;
 		var x = 1;
 		var y = 1;
-		
+
 		while( x <= width ){
 			while( y <= height ){
 				var name =  x + '.' + y;
@@ -174,17 +181,17 @@ module.exports = {
 					self.world[ name ].connections.push( x + "." + (y+1) );
 				}
 				if(  y != 1 ){
-					self.world[ name ].connections.push( x + "." + (y-1) );	
+					self.world[ name ].connections.push( x + "." + (y-1) );
 				}
 				if( x < 50  ){
-					self.world[ name ].connections.push( (x+1) + "." + y );	
+					self.world[ name ].connections.push( (x+1) + "." + y );
 				}
 				if( x  != 1 ){
-					self.world[ name ].connections.push( (x-1) + "." + y );	
+					self.world[ name ].connections.push( (x-1) + "." + y );
 				}
 				y++;
-			} 
-			y=1;	
+			}
+			y=1;
 			x++;
 		}
 		var list = [
@@ -200,7 +207,7 @@ module.exports = {
 		for( var s in list ){
 			self.world[ list[s] ].tileClass = "gold";
 		}
-		
+
 	},
 	game : {},
     units : {},
@@ -209,7 +216,7 @@ module.exports = {
 		self.game = game;
         self.units = units;
 		self.generateWorld();
-		
-		
+
+
 	}
 }
