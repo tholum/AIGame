@@ -2,7 +2,7 @@
 	<head>	
         <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
-        <link rel="stylesheet" href="bower_components/components-font-awesome/css/font-awesome.min.css">
+        <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
         <script src="bower_components/jquery/dist/jquery.min.js"></script>
         <script src="bower_components/jqueryui/jquery-ui.min.js"></script>
         <script src="bower_components/knockoutjs/dist/knockout.js"></script>
@@ -27,20 +27,30 @@
             .gold {
                 background-color : yellow;
             }
-            .archer {
+            .archer .unit {
                 background-image : url(img/archer.png);
                 background-size: 20px 20px;
                 background-repeat: no-repeat;
             }
-            .base {
-                background-image : url(img/base.png);
+            .base .unit {
+                background-image : url(img/base.png); 
                 background-size: 20px 20px;
-                background-repeat: no-repeat;
+                background-repeat: no-repeat; 
+                font-size: 16px;
+                text-align: center;
+                
             }
-            .grunt {
+            .grunt .unit {
                 background-image : url(img/grunt.png);
                 background-size: 20px 20px;
                 background-repeat: no-repeat;
+            }
+            .player1 .unit {
+                filter: invert();
+            }
+            .unit {
+                width: 20px;
+                height: 20px;
             }
         </style>
         <script>
@@ -81,15 +91,16 @@
                 });
                 $.getJSON('/map' , function(map){
                     $.each( map , function( key , value ){
-                        value.unitType = ko.computed(function(){
+                        value.myUnit = ko.computed( () => {
+                            
                             if( value.units.length !== 0 ){
-                                var unit = view.unitById( value.units[0] );
-                                if( unit !== false ){
-                                    return unit.type;
-                                }
-                           } else {
-                                return '';
-                           }
+                                return view.unitById( value.units[0] );
+                            }
+                            return false;
+                        })
+                        value.unitType = ko.computed(function(){
+                            let unit = value.myUnit();
+                            return unit === false ? "" : unit.type;
                         });
                         view.map.push( value );
                     });
@@ -104,8 +115,12 @@
 	</head>
 	<body>
         <div class="map" >
-        <!-- ko foreach: map --><!--
-          --><div style="width:20px;height:20px;padding: 0;margin:0;" data-bind="css : { grass : tileClass == 'grass' , gold : tileClass == 'gold' , archer : x == y , base : unitType() == 'base' , archer : unitType() == 'archer' , grunt : unitType() == 'grunt' }" ></div><!--
+        <!-- ko foreach: map --><!-- -->
+          <div 
+            style="width:20px;height:20px;padding: 0;margin:0;" 
+            data-bind="css : { player1 : myUnit() !== false && myUnit().player === 1 ,  player2 : myUnit() !== false && myUnit().player === 2 ,   grass : tileClass == 'grass' , gold : tileClass == 'gold' , archer : x == y , base : unitType() == 'base' , archer : unitType() == 'archer' , grunt : unitType() == 'grunt' }" >
+                <div class="unit"></div>
+        </div><!--
           --><!-- ko if: y == 50 -->
             <br/>
           <!-- /ko --><!--
